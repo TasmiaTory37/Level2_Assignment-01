@@ -3,7 +3,7 @@
 TypeScript-এ `interface` এবং `type` দুটোই মূলত object-এর গঠন বা কাঠামো বর্ণনা করতে ব্যবহৃত হয়। কাজ অনেকটাই মিল থাকলেও, তাদের আচরণ ও ব্যবহারের ক্ষেত্র কিছু দিক থেকে আলাদা।
 একটি বড় পার্থক্য হলো declaration merging। interface একাধিকবার একই নামে ঘোষণা করলে TypeScript স্বয়ংক্রিয়ভাবে এগুলো merge করে ফেলে। এটি তখনই কাজে লাগে যখন একটি বড় object-এর ভিন্ন ভিন্ন অংশ আলাদা ফাইলে সংজ্ঞায়িত করতে হয়। অপরদিকে, type alias কখনো merge হয় না এটি একবারই declare করা যায়।
 আরেকটি পার্থক্য হলো extending বা inheritance। interface খুব সহজেই extend করা যায়, অনেকটা class এর মতো। অন্যদিকে, type alias দিয়ে inheritance করা যায়, তবে সেটি করতে intersection (`&`) ব্যবহার করতে হয়। এই কারণে interface object এর shape নির্ধারণে বেশি natural লাগে।
-তবে flexibility এর ক্ষেত্রে type alias এগিয়ে। type দিয়ে শুধু object structure নয়, বরং union, tuple, primitive, function signature—সব ধরনের টাইপ তৈরি করা যায়। interface এই বৈচিত্র্য দিতে পারে না।
+তবে flexibility এর ক্ষেত্রে type alias এগিয়ে। type দিয়ে শুধু object structure নয়, বরং union, tuple, primitive, function signature সব ধরনের টাইপ তৈরি করা যায়। interface এই বৈচিত্র্য দিতে পারে না।
 
 
 
