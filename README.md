@@ -57,6 +57,8 @@ interface দিয়ে এগুলো করা যায় না।
 
 
 
+
+
 3.Explain the difference between any, unknown, and never types in TypeScript.
 
 TypeScript-এর type safety বোঝার জন্য any, unknown এবং never এই তিনটি টাইপ গুরুত্বপূর্ণ ভূমিকা রাখে। এগুলোর আচরণ একে অপরের থেকে পুরোপুরি আলাদা।
