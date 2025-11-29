@@ -9,7 +9,7 @@ const formatValue = (value: string | number | boolean): string | number | boolea
 };
 
 
-const getLength = (value: string | any[]): number => {
+const getLength = (value: string | unknown[]): number => {
   if (typeof value === 'string') {
     return value.length;
   } else if (Array.isArray(value)) {
@@ -68,26 +68,29 @@ const printBookDetails = (book: Book): string => {
 };
 
 
-const getUniqueValues = (
-  arr1: (string | number)[],
-  arr2: (string | number)[]
-): (string | number)[] => {
+const getUniqueValues = (arr1: (string | number)[], arr2: (string | number)[]): (string | number)[] => {
   const finalArray: (string | number)[] = [];
 
-  for (const item of arr1) {
-    if (!finalArray.includes(item)) {
-      finalArray.push(item);
+  const exists = (arr: (string | number)[], value: string | number): boolean => {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === value) return true;
     }
+    return false;
+  };
+
+  for (let i = 0; i < arr1.length; i++) {
+    const v = arr1[i];
+    if (!exists(finalArray, v)) finalArray.push(v);
   }
 
-  for (const item of arr2) {
-    if (!finalArray.includes(item)) {
-      finalArray.push(item);
-    }
+  for (let j = 0; j < arr2.length; j++) {
+    const v = arr2[j];
+    if (!exists(finalArray, v)) finalArray.push(v);
   }
 
   return finalArray;
 };
+
 
 
 interface Product {
