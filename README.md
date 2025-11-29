@@ -1,15 +1,114 @@
 1. What are some differences between interfaces and types in TypeScript?
 
-TypeScript-এ `interface` এবং `type` দুটোই মূলত object-এর গঠন বা কাঠামো বর্ণনা করতে ব্যবহৃত হয়। কাজ অনেকটাই মিল থাকলেও, তাদের আচরণ ও ব্যবহারের ক্ষেত্র কিছু দিক থেকে আলাদা।
-একটি বড় পার্থক্য হলো declaration merging। interface একাধিকবার একই নামে ঘোষণা করলে TypeScript স্বয়ংক্রিয়ভাবে এগুলো merge করে ফেলে। এটি তখনই কাজে লাগে যখন একটি বড় object-এর ভিন্ন ভিন্ন অংশ আলাদা ফাইলে সংজ্ঞায়িত করতে হয়। অপরদিকে, type alias কখনো merge হয় না এটি একবারই declare করা যায়।
-আরেকটি পার্থক্য হলো extending বা inheritance। interface খুব সহজেই extend করা যায়, অনেকটা class এর মতো। অন্যদিকে, type alias দিয়ে inheritance করা যায়, তবে সেটি করতে intersection (`&`) ব্যবহার করতে হয়। এই কারণে interface object এর shape নির্ধারণে বেশি natural লাগে।
-তবে flexibility এর ক্ষেত্রে type alias এগিয়ে। type দিয়ে শুধু object structure নয়, বরং union, tuple, primitive, function signature সব ধরনের টাইপ তৈরি করা যায়। interface এই বৈচিত্র্য দিতে পারে না।
+TypeScript-এ interface এবং type দুটোই প্রধানত object এর কাঠামো বা shape নির্ধারণ করতে ব্যবহৃত হয়। কাজ অনেকটাই মিল থাকলেও কিছু ক্ষেত্রে উল্লেখযোগ্য পার্থক্য রয়েছে।
+
+1) Declaration Merging (শুধু interface এ সম্ভব)
+
+একই নামে interface দুইবার লিখলে TypeScript সেগুলো merge করে দেয়।
+
+Example:
+interface User {
+  name: string;
+}
+
+interface User {
+  age: number;
+}
+
+// Final merged interface:
+// { name: string; age: number }
+
+
+কিন্তু type alias-এর ক্ষেত্রে এটি সম্ভব নয়।
+
+type User = { name: string };
+type User = { age: number }; 
+//  Error: Duplicate type name
+
+2) Extending (interface সহজ, type একটু আলাদা)
+
+interface খুব সহজে inherit করা যায়:
+
+Example:
+interface Person {
+  name: string;
+}
+
+interface Employee extends Person {
+  salary: number;
+}
+
+
+type-এ inheritance করতে intersection operator (&) ব্যবহার করতে হয়:
+
+type Person = { name: string };
+type Employee = Person & { salary: number };
+
+3) Flexibility (type বেশি flexible)
+
+type alias দিয়ে union, tuple, primitive type alias ইত্যাদি বানানো যায়।
+
+Example:
+type ID = string | number;
+type Point = [number, number];
+
+
+interface দিয়ে এগুলো করা যায় না।
 
 
 
 3.Explain the difference between any, unknown, and never types in TypeScript.
 
-TypeScript-এর type safety বোঝার জন্য `any`, `unknown`, এবং `never` এই তিনটি টাইপ ভালোভাবে বোঝা জরুরি। এরা দেখতে ছোট হলেও ব্যবহারিক ক্ষেত্রে বড় পার্থক্য সৃষ্টি করে।
-`any` হলো সবচেয়ে ঢিলা টাইপ। এতে যেকোনো মান রাখা যায় এবং মান ব্যবহার করার সময় TypeScript কোনো চেক করে না। ফলে কোড দ্রুত লেখা যায়, তবে ভুল ধরার সুযোগ কমে যায়। বড় অ্যাপ্লিকেশনে বেশি any ব্যবহার করলে bug হওয়ার ঝুঁকি বেড়ে যায়।
-`unknown` অনেকটা any-এর মতো এখানেও যেকোনো মান assign করা যায়। কিন্তু পার্থক্য হলো, unknown টাইপের ভ্যালু ব্যবহার করার আগে অবশ্যই type-check করতে হয়। এতে কোড কিছুটা নিরাপদ হয়, কারণ TypeScript নিশ্চিত হতে চায় যে ডেভেলপার মানটি ব্যবহার করার আগে তার টাইপ জানে।
-অন্যদিকে, `never` এমন একটি টাইপ যা এমন পরিস্থিতিকে নির্দেশ করে যেখানে কোনো মানই return হবে না। উদাহরণ হিসেবে একটি function সর্বদা error ছুঁড়ে দিলে বা infinite loop-এর মধ্যে চললে সে কখনো return করতে পারে না। তাই TypeScript এটিকে never টাইপ হিসেবে ধরে। সাধারণত edge case বা exhaustive checking এর ক্ষেত্রে এটি ব্যবহৃত হয়।
+TypeScript-এর type safety বোঝার জন্য any, unknown এবং never এই তিনটি টাইপ গুরুত্বপূর্ণ ভূমিকা রাখে। এগুলোর আচরণ একে অপরের থেকে পুরোপুরি আলাদা।
+
+1) any (সবচেয়ে ঢিলা টাইপ)
+
+any মানে হলো এই ভেরিয়েবলের উপর TypeScript আর কোন নিয়ম প্রয়োগ করবে না।
+
+Example:
+let value: any = 10;
+value = "Hello";
+value = true;
+value = { x: 1 };
+
+
+যেকোনো মান assign করা যায়
+
+ভুল ধরার সুযোগ কম
+
+বড় প্রজেক্টে বেশি ব্যবহার করা ঝুঁকিপূর্ণ
+
+2) unknown (safer any)
+
+unknown এ যেকোনো মান assign করা যায়, কিন্তু ব্যবহার করার আগে অবশ্যই type-check করতে হয়।
+
+Example:
+let data: unknown = "Hi";
+
+// data.toUpperCase(); // Direct use not allowed
+
+if (typeof data === "string") {
+  data.toUpperCase(); // Safe
+}
+
+
+flexible, কিন্তু নিরাপদ
+
+API response বা dynamic data handle করার জন্য উপযোগী
+
+3) never (যেখানে কিছুই return করা হয় না)
+
+never সেই টাইপ যা নির্দেশ করে যে এই ফাংশন কখনোই return করবে না।
+
+Example 1 — error:
+function throwError(msg: string): never {
+  throw new Error(msg);
+}
+
+Example 2 — infinite loop:
+function loopForever(): never {
+  while (true) {}
+}
+
+
+সাধারণত error handling বা exhaustive checking-এ ব্যবহৃত হয়
